@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html class="loginHtml" lang="cn" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>登录</title>
+    <link rel="icon" href="img/ico.ico">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="css/public.css" media="all" />
+</head>
+
+<body class="loginBody">
+<form class="layui-form">
+    <div class="login_face"><img src="img/login.jpg" class="userAvatar" style="width: 100%;height: 100%"></div>
+    <div class="layui-form-item input-item">
+        <label for="userName">用户名</label>
+        <input type="text" placeholder="请输入用户名" autocomplete="off" id="username" name="username" class="layui-input" lay-verify="required">
+    </div>
+    <div class="layui-form-item input-item">
+        <label for="password">密码</label>
+        <input type="password" placeholder="请输入密码" autocomplete="off" id="password" name="password" class="layui-input" lay-verify="required">
+    </div>
+    <div class="layui-form-item input-item" id="imgCode">
+        <label for="code">验证码</label>
+        <input type="text" placeholder="请输入验证码" autocomplete="off" id="code" name="code" class="layui-input">
+        <img src="http://localhost:8080/home/code" onclick="changeCode()" id="codeImg">
+    </div>
+    <div class="layui-form-item">
+        <button class="layui-btn layui-block" lay-filter="login" lay-submit>登录</button>
+    </div>
+</form>
+</body>
+
+<script type="text/javascript" src="layui/layui.js"></script>
+<script type="text/javascript" src="js/login.js"></script>
+
+</html>

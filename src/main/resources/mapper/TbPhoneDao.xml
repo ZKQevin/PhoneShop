@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team.gfr.phone.dao.TbPhoneDao">
+
+    <resultMap type="team.gfr.phone.entity.TbPhone" id="TbPhoneMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="image" column="image" jdbcType="VARCHAR"/>
+        <result property="intro" column="intro" jdbcType="VARCHAR"/>
+        <result property="price" column="price" jdbcType="INTEGER"/>
+        <result property="recom" column="recom" jdbcType="VARCHAR"/>
+        <result property="act" column="act" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TbPhoneMap">
+        select id,
+               type,
+               name,
+               image,
+               intro,
+               price,
+               recom,
+               act
+        from phone.tb_phone
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TbPhoneMap">
+        select id,
+               type,
+               name,
+               image,
+               intro,
+               price,
+               recom,
+               act
+        from phone.tb_phone limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TbPhoneMap">
+        select
+        id, type, name, image, intro, price, recom, act
+        from phone.tb_phone
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="type != null and type != ''">
+                and type = #{type}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="image != null and image != ''">
+                and image = #{image}
+            </if>
+            <if test="intro != null and intro != ''">
+                and intro = #{intro}
+            </if>
+            <if test="price != null">
+                and price = #{price}
+            </if>
+            <if test="recom != null and recom != ''">
+                and recom = #{recom}
+            </if>
+            <if test="act != null">
+                and act = #{act}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into phone.tb_phone(type, name, image, intro, price, recom, act)
+        values (#{type}, #{name}, #{image}, #{intro}, #{price}, #{recom}, #{act})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into phone.tb_phone(type, name, image, intro, price, recom, act)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.type}, #{entity.name}, #{entity.image}, #{entity.intro}, #{entity.price}, #{entity.recom},
+            #{entity.act})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into phone.tb_phone(type, name, image, intro, price, recom, act)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.type}, #{entity.name}, #{entity.image}, #{entity.intro}, #{entity.price}, #{entity.recom},
+            #{entity.act})
+        </foreach>
+        on duplicate key update
+        type = values(type) , name = values(name) , image = values(image) , intro = values(intro) , price =
+        values(price) , recom = values(recom) , act = values(act)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update phone.tb_phone
+        <set>
+            <if test="type != null and type != ''">
+                type = #{type},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="image != null and image != ''">
+                image = #{image},
+            </if>
+            <if test="intro != null and intro != ''">
+                intro = #{intro},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="recom != null and recom != ''">
+                recom = #{recom},
+            </if>
+            <if test="act != null">
+                act = #{act},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from phone.tb_phone
+        where id = #{id}
+    </delete>
+
+    <!--统计手机的条数-->
+    <select id="phonecount" resultType="java.lang.Long">
+        select count(id)
+        from phone.tb_phone
+    </select>
+
+    <!--模糊查询-->
+    <select id="querylike" resultMap="TbPhoneMap">
+        select id,
+               type,
+               name,
+               image,
+               intro,
+               price,
+               recom,
+               act
+        from phone.tb_phone
+        <where>
+        <if test="value!=null and value!=''">
+            or type like concat("%",#{value},"%")
+            or name like concat("%",#{value},"%")
+            or intro like concat("%",#{value},"%")
+        </if>
+        </where>
+    </select>
+
+    <!--通过id修改指定区域-->
+    <update id="updatephone" parameterType="team.gfr.phone.Dto.UpdateData">
+        update phone.tb_phone
+            <set>
+                <if test="field =='type'">
+                    type=#{value},
+                </if>
+                <if test="field =='name'">
+                    name = #{value},
+                </if>
+                <if test="field =='intro'">
+                    intro = #{value},
+                </if>
+                <if test="field =='price'">
+                    price = #{value},
+                </if>
+            </set>
+        where id = #{id}
+    </update>
+</mapper>

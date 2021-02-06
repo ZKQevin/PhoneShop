@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>富文本编辑器</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../kindeditor/themes/default/default.css">
+</head>
+<body>
+<button id="btn_open">打开富文本弹框</button>
+</body>
+</html>
+<script type="text/html" id="richTextDialog">
+    <textarea id="editor_id" name="content" style="width: 90%;height: 400px;"></textarea>
+</script>
+<script src="../js/jquery.min.js"></script>
+<script src="../layui/layui.all.js"></script>
+<script src="../kindeditor/kindeditor-all-min.js"></script>
+<script src="../kindeditor/lang/zh-CN.js"></script>
+<script src="../js/common.js"></script>
+<script>
+
+    layuiModules=['layer'];
+    useKindEditor=true;
+    
+    function mounted() {
+        $('#btn_open').click(function () {
+            layer.open({
+                title: '编辑',
+                type: 1,
+                content: $('#richTextDialog').html(),
+                area: ['70%', '80%'],
+                btn:['确定','取消'],
+                success :function(){
+                    window.editor = KindEditor.create('#editor_id');
+                },
+                yes:function (index, layero) {
+
+                },
+                btn2:function (index,layero) {
+
+                }
+            });
+
+        })
+    }
+
+</script>

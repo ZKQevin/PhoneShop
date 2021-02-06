@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+
+<body>
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户名</label>
+        <div class="layui-input-block">
+            <input type="text" name="username" lay-verify="requeired" autocomplete="off" placeholder="请输入用户名" class="layui-input">
+            <!--name必须跟后端代码的实体类名称一一对应，不然会出问题-->
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码</label>
+        <div class="layui-input-block">
+            <input type="text" name="password" lay-verify="requeired" autocomplete="off" placeholder="请输入密码" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button type="submit" class="layui-btn" lay-submit="" lay-filter="phonesubmit">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+
+</form>
+</body>
+<script type="text/javascript" src="../layui/layui.js"></script>
+<script>
+    layui.use(['form', 'upload', "layer"], function() {
+        var form = layui.form,
+            upload = layui.upload,
+            layer = layui.layer,
+            $ = layui.jquery;
+
+        //监听提交
+        form.on('submit(phonesubmit)', function(data) {
+            var d = data.field;//名值对
+            $.ajax({
+                type:"POST",
+                url:"http://localhost:8080/tbUser/upuser",
+                dataType:'json',/*表示后端向前端传递的值必须是JSON*/
+                contentType:'application/json',
+                data:JSON.stringify(d),
+                /*如果后端跟前端的对应值不一样的话前端再写个ID就在data中写上{"name":#("前端值").var()取值，重新对应}*/
+                success:function(res){
+                    if (res.msg=='操作失败'){
+                        layer.msg("用户名已存在！")
+                    }else {
+                        layer.msg(res.msg)
+                    }
+                }
+            });
+            return false;
+        });
+
+    })
+</script>
+
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>手机商城后台</title>
+    <link rel="icon" href="img/ico.ico">
+    <link rel="stylesheet" href="../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
+    <!--HTML中，静态网页就会访问前面的href，当服务器启动之后就会使用的是th后面的路径，其中使用的是@{}一定要加@{}才能够正常读到-->
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo" style="font-size: 26px"><a href="" style="color: red">PhoneShop</a></div>
+        <ul class="layui-nav layui-layout-left">
+            <li id="nowtime" class="layui-nav-item"></li>
+            <span class="layui-nav-bar" style="left: 61px; top: 55px; width: 0px; opacity: 0;"></span></ul>
+        <ul class="layui-nav layui-layout-right">
+<!--            <li class="layui-nav-item" style="color: wheat">欢迎您</li>-->
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://localhost:8080/img/login.jpg" class="layui-nav-img">
+                    <p th:text="${session.user.username}" style="display: inline-block" id="username"></p>
+                </a>
+                <dl class="layui-nav-child">
+                    <!--<div id="parentChangePassword"></div>-->
+                    <dd><a style="cursor:pointer;" onclick="showMessage()">查看身份</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="http://localhost:8080">退出</a></li>
+        </ul>
+    </div>
+    <!--侧边导航栏-->
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">手机管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="http://localhost:8080/home/phone" target="ifr">手机列表</a></dd>
+                        <dd><a href="http://localhost:8080/home/upphone" target="ifr">上传手机</a></dd>
+                    </dl>
+                </li>
+                <!--用户信息管理-->
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">用户管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="http://localhost:8080/home/userlist" target="ifr">用户列表</a></dd>
+                        <dd><a href="http://localhost:8080/home/upuser" target="ifr">添加用户</a></dd>
+                    </dl>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <iframe src="http://localhost:8080/home/main" width="100%" height="95%" name="ifr"></iframe>
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        PhoneShop.com
+    </div>
+</div>
+<script src="../static/layui/layui.all.js"  th:src="@{/layui/layui.all.js}"></script>
+<script>
+    //JavaScript代码区域
+    layui.use('element', function () {
+        var element = layui.element;
+
+
+    });
+    //页面加载调用
+    window.onload=function(){
+        //每1秒刷新时间
+        setInterval("NowTime()",1000);
+    }
+    function NowTime(){
+        var myDate=new Date();
+        var y = myDate.getFullYear();
+        var M = myDate.getMonth()+1;     //获取当前月份(0-11,0代表1月)
+        var d = myDate.getDate();        //获取当前日(1-31)
+        var h = myDate.getHours();       //获取当前小时数(0-23)
+        var m = myDate.getMinutes();     //获取当前分钟数(0-59)
+        var s = myDate.getSeconds();     //获取当前秒数(0-59)
+
+        //检查是否小于10
+        M=check(M);
+        d=check(d);
+        h=check(h);
+        m=check(m);
+        s=check(s);
+        var timestr = y+"-"+M+"-"+d+" "+h+":"+m+":"+s;
+        document.getElementById("nowtime").innerHTML="当前时间：" + timestr;
+    }
+    //时间数字小于10，则在之前加个“0”补位。
+    function check(i){
+        var num = (i<10)?("0"+i) : i;
+        return num;
+    }
+    var username=document.getElementById("username");
+    function showMessage() {
+        if (username.innerText=='admin'){
+            alert("超级管理员")
+        }else {
+            alert("普通管理员")
+        }
+    }
+</script>
+
+
+
+<!--修改密码弹框-->
+<!--
+<script type="text/html" id="dialogChangePassword">
+    <form class="layui-form" id="dialogChangePasswordForm" style="margin-top:30px;padding-right:30px;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">原密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="password"
+                       placeholder="请输入原密码" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">新密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="newPassword"
+                       placeholder="请输入新密码" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">确认密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="okPassword"
+                       placeholder="请重复输入密码" class="layui-input">
+            </div>
+        </div>
+    </form>
+</script>
+<script src="../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+<script src="../static/js/common.js" th:src="@{/js/conmmon.js}"></script>
+<script>
+
+    layuiModules=['layer', 'form','element'];
+
+    function mounted() {
+        //菜单列表数据
+        window.menuArray = [
+            {
+                name: "首页",
+                id: 0,
+                pid: -1,
+                url: '#/'
+            }, {
+                name: "默认展开",
+                id: 1,
+                pid: -1,
+                url: ''
+            }, {
+                name: "解决方案",
+                id: 2,
+                pid: -1,
+                url: ''
+            }, {
+                name: "表格",
+                id: 3,
+                pid: -1,
+                url: '#/table.html'
+            }, {
+                name: "多图上传",
+                id: 4,
+                pid: -1,
+                url: '#/multi_image_upload.html'
+            }, {
+                name: "富文本",
+                id: 5,
+                pid: -1,
+                url: '#/rich_editor.html'
+            }, {
+                name: "选项1",
+                id: 6,
+                pid: 1,
+                url: ''
+            }, {
+                name: "选项2",
+                id: 7,
+                pid: 1,
+                url: ''
+            }, {
+                name: "选项2-2",
+                id: 8,
+                pid: 7,
+                url: ''
+            },
+        ];
+        formatMenus();
+        //初始化类vue路由
+        initRouter();
+
+        //显示修改密码弹框
+        $('#parentChangePassword').click(function () {
+            $('.dialogMenu').css('display', 'none');
+            layer.open({
+                type: 1,
+                title: '修改密码',
+                content: $('#dialogChangePassword').html(), //这里content是一个普通的String
+                btn: ['确定', '取消'],
+                success: function (index, layero) {
+                    form.render();
+                    $('#dialogChangePasswordForm').submit(function (e) {
+                        console.log(formArray2Data($(this).serializeArray()));
+                        return false;
+                    });
+                },
+                yes: function (index, layero) {
+                    $('#dialogChangePasswordForm').submit();
+                },
+                btn2: function (index, layero) {
+                    //return false 开启该代码可禁止点击该按钮关闭
+                }
+            });
+        });
+    }
+    /**
+     *格式化菜单数据
+     */
+    function formatMenus() {
+        findChildMenus(-1);
+        window.element.render('nav');
+    }
+    /**
+     * 根据id查找下级菜单
+     * @param id
+     */
+    function findChildMenus(id) {
+        if (id == -1) {
+            menuArray.forEach(function (item) {
+                if (item.pid == id) {
+                    $('.leftMenu ul')
+                        .append('<li menu-id="' + item.id + '" class="layui-nav-item"><a href="' + item.url + '">' + item.name + '</a></li>')
+                    findChildMenus(item.id);
+                }
+            });
+
+        } else {
+            menuArray.forEach(function (item) {
+                if (item.pid == id) {
+                    $('[menu-id="' + item.pid + '"]>a').removeAttr('href');
+                    if (!$('[menu-id="' + item.pid + '"]').children('dl')[0]) {
+                        $('[menu-id="' + item.pid + '"]').append('<dl class="layui-nav-child"></dl>')
+                    }
+                    $('[menu-id="' + item.pid + '"] dl')
+                        .append('<dd menu-id="' + item.id + '"><a href="' + item.url + '">' + item.name + '</a></dd>');
+                    findChildMenus(item.id);
+                }
+            });
+        }
+
+    }
+</script>
+
+-->
+</body>
+</html>

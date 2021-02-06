@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+
+<body>
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">品牌</label>
+        <div class="layui-input-block">
+            <input type="text" name="type" lay-verify="requeired" autocomplete="off" placeholder="请输入手机品牌" class="layui-input">
+            <!--name必须跟后端代码的实体类名称一一对应，不然会出问题-->
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">型号</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="requeired" autocomplete="off" placeholder="请输入手机型号" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机图片</label>
+        <div class="layui-upload-drag" id="image">
+            <i class="layui-icon"></i>
+            <p>点击上传，或将文件拖拽到此处（JPG类型）</p>
+            <div class="layui-hide" id="uploadDemoView">
+                <hr>
+                <img src="" alt="上传成功后渲染" style="max-width: 196px">
+                <input type="text" name="image" class="layui-input layui-hide" id="albumpic">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">介绍</label>
+        <div class="layui-input-block">
+            <input type="text" name="intro" lay-verify="requeired" autocomplete="off" placeholder="请输入介绍内容" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">价格</label>
+        <div class="layui-input-block">
+            <input type="text" name="price" lay-verify="requeired" autocomplete="off" placeholder="请输入价格" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">推荐指数</label>
+        <div class="layui-input-block">
+            <input type="text" name="recom" lay-verify="requeired" autocomplete="off" placeholder="请输入推荐指数" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">活动价格</label>
+        <div class="layui-input-block">
+            <input type="text" name="act" lay-verify="requeired" autocomplete="off" placeholder="请输入活动价格" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button type="submit" class="layui-btn" lay-submit="" lay-filter="phonesubmit">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+
+</form>
+</body>
+<script type="text/javascript" src="../layui/layui.js"></script>
+<script>
+    layui.use(['form', 'upload', "layer"], function() {
+        var form = layui.form,
+            upload = layui.upload,
+            layer = layui.layer,
+            $ = layui.jquery;
+
+        //上传图片
+        //拖拽上传 ctrl+shift+F
+        upload.render({
+            elem: '#image',
+            url: 'http://localhost:8080/tbPhone/upfile' //改成您自己的上传接口
+            ,
+            done: function(res) {
+                if(res.code == 200) {
+                    layer.msg(res.msg)
+                    layui.$('#uploadDemoView').removeClass('layui-hide').find('img').attr('src', res.data);
+                    $("#albumpic").val(res.data);
+                    console.log(res) /*日誌輸出*/
+                } else {
+                    layer.msg(res.msg)
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(phonesubmit)', function(data) {
+            var d = data.field;//名值对
+            $.ajax({
+                type:"POST",
+                url:"http://localhost:8080/tbPhone/upphone",
+                dataType:'json',/*表示后端向前端传递的值必须是JSON*/
+                contentType:'application/json',
+                data:JSON.stringify(d),
+                /*如果后端跟前端的对应值不一样的话前端再写个ID就在data中写上{"name":#("前端值").var()取值，重新对应}*/
+                success:function(res){
+                    layer.msg(res.msg)
+                }
+            });
+            return false;
+        });
+
+    })
+</script>
+
+</html>
